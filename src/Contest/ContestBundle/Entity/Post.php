@@ -52,12 +52,14 @@ class Post
     protected $thumbnail;
 
     /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="post", cascade={"remove"})
      */
     protected $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity="Media", mappedBy="post")
+     * @var ArrayCollection
+     * 
+     * @ORM\OneToMany(targetEntity="File", mappedBy="contest", cascade={"remove"})
      */
     protected $media;
 

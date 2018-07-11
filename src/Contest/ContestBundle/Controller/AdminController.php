@@ -14,27 +14,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AdminController extends BaseAdminController
 {
-   /* public function createContestNewForm($entity, $view)
-    {
-        $formBuilder = parent::createNewForm($entity, $view);
-
-        $entity
-            ->setStartDate(new \DateTime())
-            ->setFinishDate(new \DateTime());
-
-        $formBuilder->add('allowedFiles', EntityType::class, array(
-            'class' => Filetype::class,
-            'multiple' => true,
-            'label' => 'Dozwolone typy plików',
-            'expanded' => true,
-            'choices_as_values' => true,
-            'choice_label' => 'value',
-            'attr' => array('class' => 'group')
-        ));
-
-        return $formBuilder;
-    }*/
-
+    /**
+     * @todo przenieść do serwisu
+     */
     public function persistContestEntity($entity)
     {
         $entity
@@ -42,19 +24,26 @@ class AdminController extends BaseAdminController
         
         if (null !== $entity->getThumbnail()) {
             $thumbnail = $entity->getThumbnail();
-           // $thumbnail->getMimeType();
             $file = new File();
-          /*  $file
+            $file
                 ->setMimeType($thumbnail->getMimeType())
                 ->setExtension($thumbnail->guessExtension())
-            ;*/
+                ->setFileSize($thumbnail->getClientSize())
+                ->setTempName($this->generateUniquename())
+                ->setOriginalName($thumbnail->getClientOriginalName())
+                ->setPost(null);
+            ;
 
-            print_r($thumbnail);
-            print_r($entity->getThumbnail()->getClientSize());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($file);
+            $entityManager->flush($file);
         }
 
-        die();
+        parent::persistEntity($entity);
+    }
 
-       // parent::persistEntity($entity);
+    private function generateUniqueName()
+    {
+        return uniqid();
     }
 }

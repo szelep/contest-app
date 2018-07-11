@@ -8,7 +8,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en
+    locale: pl
     app.path.thumbnail_images: /uploads/images/thumbnails
 
 framework:
@@ -89,36 +89,23 @@ easy_admin:
     design:
         form_theme:
             - 'vertical'
+        menu:
+            - { entity: 'Contest', label: 'Lista konkursów', icon: 'list-ul' }
+            - { entity: 'Post', label: 'Posty konkursowe', icon: 'paint-brush'}
+            - { entity: 'Comment', label: 'Komentarze', icon: 'comments'}
+            #- { entity: 'Media', label: 'Media', icon: 'image'}
+            - { entity: 'Filetype', label: 'Typy plików', icon: 'file'}
     entities:
-        Post:
-            class: ContestBundle\Entity\Post
-            form:
-                fields: 
-                    - { type: 'group', css_class: 'col-sm-7', label: 'Podstawowe informacje', icon: 'pencil' }
-                    - { property: 'contest', label: 'Konkurs' }
-                    - { property: 'author', label: 'Autor' }
-                    - { property: 'comments' }
-            permissions:
-                list:  ['ROLE_EDITOR']
-                create:  ['ROLE_EDITOR']
-                edit:  ['ROLE_EDITOR']
-                delete:  ['ROLE_ADMIN']
-        Comment:
-            class: ContestBundle\Entity\Comment
         Contest:
             class: ContestBundle\Entity\Contest
-            #list:
-               # fields:
-                   
             form:
                 fields:
                     - { type: 'group', css_class: 'col-sm-7', label: 'Podstawowe informacje', icon: 'pencil' }
                     - { property: 'title', type: 'text', label: 'Nazwa konkursu' }
                     - { property: 'startDate', type: 'datetime', label: 'Data startu' }
                     - { property: 'finishDate', type: 'datetime', label: 'Data zakończenia', help: 'Po tej dacie nie będzie możliwe głosowanie oraz dodawanie treści.' }
-                    - { property: 'thumbnail', type: 'file', label: 'Miniatura konkursu' }
                     - { type: 'section', label: 'Regulamin / opis', icon: 'list' }
-                    - { property: 'description', type: 'ckeditor', label: 'Regulamin / opis' }
+                    - { property: 'description', type: 'ckeditor', label: 'Regulamin / opis', type_options: { required: false } }
                     - { property: 'needToAccept', label: 'Musi zostać zaakceptowany' }
                     - { type: 'group', css_class: 'col-sm-5', label: 'Opcje', icon: 'check' }
                     - { property: 'isPublished', type: 'checkbox', label: 'Opublikuj od razu' }
@@ -134,20 +121,26 @@ easy_admin:
                     - { property: 'postLimit', type: 'integer', label: 'Limit wpisów', help: 'Zero oznacza brak limitu.' }
                     - { property: 'maxVotesPerUser', type: 'integer', label: 'Na ile postów użytkownik może zagłosować', help: 'Zero oznacza brak limitu.' }
                     - { type: 'group', css_class: 'col-sm-6 new-row', label: 'Pliki', icon: 'file' }
-                    - { property: 'allowedFiles', label: 'Dozwolone typy plików'}
+                    - { property: 'allowedFiles', label: 'Dozwolone typy plików', type_options: { required: true }}
                     - { property: 'maxFileSize', label: 'Maksymalny rozmiar pliku', help: 'Rozmiar w KB. Zero oznacza brak limitu.'}
                     - { property: 'mediaCountLimit', label: 'Maksymalna ilość mediów w jednym poście'}
                     - { type: 'group', css_class: 'col-sm-6', label: 'Powiadomienia dla użytkownika', icon: 'envelope' }
                     - { property: 'sendNotifications', type: 'checkbox', label: 'Wysyłaj powiadomienia' }
                     - { property: 'notifications', label: 'Zakres powiadomień'}
-                    - { type: 'group', css_class: 'col-sm-6 new-row', label: 'Moderatorzy konkursu', icon: 'user' }
-                   
-                #    - allowed_files
-                   # - thumbnail
-                    #- { property: 'notifications', label: 'Zakres powiadomień', type: 'collection', type_options: { entry_type: 'ContestBundle\Form\ContestType', by_reference: false } }
-            templates:
-                new: '@ContestBundle/EasyAdmin/new.html.twig'
-
+                    
+           # edit:
+               # fields:
+                   # - { property: 'thumbnail', label: 'Miniatura konkursu' }
+            new:
+                fields:
+                    - { type: 'group', css_class: 'col-sm-6 new-row', label: 'Miniatura konkursu', icon: 'image' }
+                    - { property: 'thumbnail', type: 'file', label: 'Miniatura konkursu' }
+            permissions:
+                list:  ['ROLE_MODERATOR']
+                create:  ['ROLE_ADMIN']
+                edit:  ['ROLE_MODERATOR']
+                delete:  ['ROLE_ADMIN']
+               
         Filetype:
             class: ContestBundle\Entity\Filetype
             form:
@@ -156,6 +149,21 @@ easy_admin:
                     - {property: 'real_type', type: 'text', label: 'Prawdziwy typ'}
         Notification:
             class: ContestBundle\Entity\Notification
+        Post:
+            class: ContestBundle\Entity\Post
+            form:
+                fields: 
+                    - { type: 'group', css_class: 'col-sm-7', label: 'Podstawowe informacje', icon: 'pencil' }
+                    - { property: 'contest', label: 'Konkurs' }
+                    - { property: 'author', label: 'Autor' }
+                    - { property: 'comments' }
+            permissions:
+                list:  ['ROLE_MODERATOR']
+                create:  ['ROLE_ADMIN']
+                edit:  ['ROLE_MODERATOR']
+                delete:  ['ROLE_ADMIN']
+        Comment:
+            class: ContestBundle\Entity\Comment
             
 stof_doctrine_extensions:
     orm:

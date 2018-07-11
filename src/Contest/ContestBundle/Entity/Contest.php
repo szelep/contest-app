@@ -102,7 +102,7 @@ class Contest
     /**
      * @var ArrayCollection
      * 
-     * @ORM\OneToMany(targetEntity="Post", mappedBy="contest")
+     * @ORM\OneToMany(targetEntity="Post", mappedBy="contest", cascade={"remove"})
      */
     protected $posts;
 
@@ -278,7 +278,7 @@ class Contest
      *     options={"default": 0}
      * )
      */
-    protected $mediaCountLimit;
+    protected $mediaCountLimit = 0;
 
     /**
      * @var bool

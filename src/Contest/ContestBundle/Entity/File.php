@@ -3,6 +3,7 @@
 namespace ContestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * File
@@ -38,14 +39,14 @@ class File
     /**
      * @var string
      *
-     * @ORM\Column(name="extension", type="string", length=255, unique=true)
+     * @ORM\Column(name="extension", type="string", length=255)
      */
     private $extension;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="file_size", type="string", length=255, unique=true)
+     * @ORM\Column(name="file_size", type="string", length=255)
      */
     private $fileSize;
 
@@ -57,11 +58,19 @@ class File
     private $mimeType;
 
     /**
-     * @var string
+    * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
+    * @ORM\JoinColumn(name="post_id", referencedColumnName="id")
+    */
+    protected $post;
+
+
+    /**
+     * @var \DateTime
      *
-     * @ORM\Column(name="post", type="string", length=255)
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $post;
+    protected $createdAt;
 
 
     /**
@@ -216,6 +225,16 @@ class File
         $this->fileSize = $fileSize;
 
         return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     *
+     * @return  \DateTime
+     */ 
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }
 
