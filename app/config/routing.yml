@@ -1,0 +1,17 @@
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+contest:
+    resource: "@ContestBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+easy_admin_bundle:
+    resource: "@ContestBundle/Controller/AdminController.php"
+    type:     annotation
+    prefix:   /admin
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"

@@ -1,0 +1,171 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+    - { resource: "@ContestBundle/Resources/config/services.yml" }
+    - { resource: "@UserBundle/Resources/config/services.yml" }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: en
+    app.path.thumbnail_images: /uploads/images/thumbnails
+
+framework:
+    templating:
+        engines: ['twig']
+    #esi: ~
+    translator: { fallbacks: ['%locale%'] }
+    secret: '%secret%'
+    router:
+        resource: '%kernel.project_dir%/app/config/routing.yml'
+        strict_requirements: ~
+    form: ~
+    csrf_protection: ~
+    validation: { enable_annotations: true }
+    #serializer: { enable_annotations: true }
+    default_locale: '%locale%'
+    trusted_hosts: ~
+    session:
+        # https://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+    fragments: ~
+    http_method_override: true
+    assets: ~
+    php_errors:
+        log: true
+
+# Twig Configuration
+twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: '%database_host%'
+        port: '%database_port%'
+        dbname: '%database_name%'
+        user: '%database_user%'
+        password: '%database_password%'
+        charset: UTF8
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #path: '%database_path%'
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: '%mailer_transport%'
+    host: '%mailer_host%'
+    username: '%mailer_user%'
+    password: '%mailer_password%'
+    spool: { type: memory }
+
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/Migrations"
+    namespace: "App\\Migrations"
+    table_name: "migration_versions"
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: UserBundle\Entity\User
+    from_email:
+        address: "%mailer_user%"
+        sender_name: "%mailer_user%"
+
+#EasyAdmin
+easy_admin:
+    design:
+        form_theme:
+            - 'vertical'
+    entities:
+        Post:
+            class: ContestBundle\Entity\Post
+            form:
+                fields: 
+                    - { type: 'group', css_class: 'col-sm-7', label: 'Podstawowe informacje', icon: 'pencil' }
+                    - { property: 'contest', label: 'Konkurs' }
+                    - { property: 'author', label: 'Autor' }
+                    - { property: 'comments' }
+            permissions:
+                list:  ['ROLE_EDITOR']
+                create:  ['ROLE_EDITOR']
+                edit:  ['ROLE_EDITOR']
+                delete:  ['ROLE_ADMIN']
+        Comment:
+            class: ContestBundle\Entity\Comment
+        Contest:
+            class: ContestBundle\Entity\Contest
+            #list:
+               # fields:
+                   
+            form:
+                fields:
+                    - { type: 'group', css_class: 'col-sm-7', label: 'Podstawowe informacje', icon: 'pencil' }
+                    - { property: 'title', type: 'text', label: 'Nazwa konkursu' }
+                    - { property: 'startDate', type: 'datetime', label: 'Data startu' }
+                    - { property: 'finishDate', type: 'datetime', label: 'Data zakończenia', help: 'Po tej dacie nie będzie możliwe głosowanie oraz dodawanie treści.' }
+                    - { property: 'thumbnail', type: 'file', label: 'Miniatura konkursu' }
+                    - { type: 'section', label: 'Regulamin / opis', icon: 'list' }
+                    - { property: 'description', type: 'ckeditor', label: 'Regulamin / opis' }
+                    - { property: 'needToAccept', label: 'Musi zostać zaakceptowany' }
+                    - { type: 'group', css_class: 'col-sm-5', label: 'Opcje', icon: 'check' }
+                    - { property: 'isPublished', type: 'checkbox', label: 'Opublikuj od razu' }
+                    - { property: 'votes_allowed', type: 'checkbox', label: 'Zezwalaj na głosowanie' }
+                    - { property: 'auto_publish_new_post', type: 'checkbox', label: 'Publikuj nowe treści automatycznie' }
+                    - { property: 'allow_remove', type: 'checkbox', label: 'Zezwalaj na usuwanie treści' }
+                    - { property: 'comments_allowed', type: 'checkbox', label: 'Zezwalaj na komentarze' }
+                    - { property: 'allowCommentVote', type: 'checkbox', label: 'Głosowanie na komentarze' }
+                    - { property: 'blockRightMouse', label: 'Zablokuj prawy przycisk myszki', help: 'Pseudo blokada pobierania mediów (po stronie klienta).' }
+                    - { property: 'allowReport', type: 'checkbox', label: 'Pozwalaj na zgłaszanie (report) komentarzy i wpisów' }
+                    - { property: 'countViews', type: 'checkbox', label: 'Licz i pokazuj wyświetlenia' }
+                    - { property: 'moderatedComments', type: 'checkbox', label: 'Komentarze moderowane' }
+                    - { property: 'postLimit', type: 'integer', label: 'Limit wpisów', help: 'Zero oznacza brak limitu.' }
+                    - { property: 'maxVotesPerUser', type: 'integer', label: 'Na ile postów użytkownik może zagłosować', help: 'Zero oznacza brak limitu.' }
+                    - { type: 'group', css_class: 'col-sm-6 new-row', label: 'Pliki', icon: 'file' }
+                    - { property: 'allowedFiles', label: 'Dozwolone typy plików'}
+                    - { property: 'maxFileSize', label: 'Maksymalny rozmiar pliku', help: 'Rozmiar w KB. Zero oznacza brak limitu.'}
+                    - { property: 'mediaCountLimit', label: 'Maksymalna ilość mediów w jednym poście'}
+                    - { type: 'group', css_class: 'col-sm-6', label: 'Powiadomienia dla użytkownika', icon: 'envelope' }
+                    - { property: 'sendNotifications', type: 'checkbox', label: 'Wysyłaj powiadomienia' }
+                    - { property: 'notifications', label: 'Zakres powiadomień'}
+                    - { type: 'group', css_class: 'col-sm-6 new-row', label: 'Moderatorzy konkursu', icon: 'user' }
+                   
+                #    - allowed_files
+                   # - thumbnail
+                    #- { property: 'notifications', label: 'Zakres powiadomień', type: 'collection', type_options: { entry_type: 'ContestBundle\Form\ContestType', by_reference: false } }
+            templates:
+                new: '@ContestBundle/EasyAdmin/new.html.twig'
+
+        Filetype:
+            class: ContestBundle\Entity\Filetype
+            form:
+                fields:
+                    - {property: 'value', type: 'text', label: 'Typ MIME'}
+                    - {property: 'real_type', type: 'text', label: 'Prawdziwy typ'}
+        Notification:
+            class: ContestBundle\Entity\Notification
+            
+stof_doctrine_extensions:
+    orm:
+        default:
+            timestampable: true
+            sluggable: true
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        thumbnail_images:
+            uri_prefix:         '%app.path.thumbnail_images'
+            upload_destination: '%kernel.root_dir%/../web%app.path.thumbnail_images%'
