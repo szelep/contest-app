@@ -1,0 +1,80 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+{% block main %}
+    <div class="row">
+        <div class="field-group col-lg-4">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        <i class="fa fa-pencil"></i>
+                        Grafiki szablonu
+                    </h3>
+                </div>
+                <div class="box-body"> 
+                {{ form_start(form) }}            
+                    <div class="form-group  field-text">
+                        <label class="control-label">Miniatura konkursu</label><br />
+                        {{ form_widget(form.thumbnail) }}
+                    </div>
+                    <hr />         
+                    <div class="form-group  field-text">
+                        <label class="control-label">Obraz nagłówka</label><br />
+                        {{ form_widget(form.headerImage) }}
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Obraz tła</label><br />
+                        {{ form_widget(form.backgroundImage) }}
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Kolor tła</label>
+                        {{ form_widget(form.backgroundColor) }}
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Kolor czcionki</label>
+                        {{ form_widget(form.fontColor) }}
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Rozmiar czcionki</label>
+                        {{ form_widget(form.fontSize) }} px
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Postów w linii</label>
+                        {{ form_widget(form.postPerLine) }}
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Szerokość kafelka</label>
+                            {{ form_widget(form.postThumbnailWidth) }} px
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Odległość pomiędzy kafelkami</label>
+                        {{ form_widget(form.spaceBetweenPost) }} px
+                    </div>
+                    <div class="form-group  field-text">
+                        <label class="control-label">Obraz stopki</label><br />
+                        {{ form_widget(form.footerImage) }}
+                    </div>          
+                </div>              
+            </div>
+        </div>
+        <div class="field-group col-lg-8">
+            <div class="box box-default">
+            <div class="box-header with-border">
+                    <h3 class="box-title">
+                        <i class="fa fa-pencil"></i>
+                        Podgląd
+                    </h3>
+                </div>
+                <div class="box-body" style="height: 500px">
+                    <div style="border: 1px solid #dedede">
+                        <div style="padding: 10px">
+                        <img src="{{ asset('upload/template/5b476f4c2b160.jpeg') }}">
+                            <div id="header-image">Obraz nagłówka</div>
+                            <div id="post-list">Lista wpisów konkursowych</div>
+                            <div id="footer-image">Obraz stopki</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

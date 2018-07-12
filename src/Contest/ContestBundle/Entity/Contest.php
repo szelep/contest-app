@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use ContestBundle\Entity\Post;
 use ContestBundle\Entity\Filetype;
+use ContestBundle\Entity\Template;
 use ContestBundle\Entity\Notification;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
@@ -91,13 +92,6 @@ class Contest
      * )
      */
     protected $isPublished = false;
-
-    /**
-     * @var string
-     * 
-     * @ORM\Column(name="thumbnail", type="string", length=255)
-     */
-    protected $thumbnail;
 
     /**
      * @var ArrayCollection
@@ -304,6 +298,14 @@ class Contest
      */
     protected $moderatedComments = false;
 
+    /**
+     * @var Template
+     * 
+     * @ORM\OneToOne(targetEntity="Template")
+     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
+     */
+    protected $template;
+
     public function __construct() {
         $this->allowedFiles = new ArrayCollection();
         $this->posts = new ArrayCollection();
@@ -439,30 +441,6 @@ class Contest
     public function getSlug()
     {
         return $this->slug;
-    }
-
-    /**
-     * Set thumbnail
-     *
-     * @param string $thumbnail
-     *
-     * @return Contest
-     */
-    public function setThumbnail($thumbnail)
-    {
-        $this->thumbnail = $thumbnail;
-
-        return $this;
-    }
-
-    /**
-     * Get thumbnail
-     *
-     * @return string
-     */
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
     }
 
     public function addPost(Post $post)
@@ -909,6 +887,30 @@ class Contest
     public function setModeratedComments(bool $moderatedComments)
     {
         $this->moderatedComments = $moderatedComments;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of template
+     *
+     * @return  Template
+     */ 
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * Set the value of template
+     *
+     * @param  Template  $template
+     *
+     * @return  self
+     */ 
+    public function setTemplate(Template $template)
+    {
+        $this->template = $template;
 
         return $this;
     }
