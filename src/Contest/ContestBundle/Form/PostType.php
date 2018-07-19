@@ -27,9 +27,13 @@ class PostType extends AbstractType
                 'attr' => array(
                     'class' => 'files-box'
                 ),
+                'entry_options' => array(
+                    'label' => false,
+                ),
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
+                'label' => 'Załącz pliki'
             ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'Wyslij',

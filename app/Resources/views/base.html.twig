@@ -3,6 +3,17 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 
 <div class="container">
+    {% block modals %}
+    {% endblock %}
+    
+    <div class="flash-container">
+    {% for message in app.flashes('notice') %}
+        <div class="flash-notice">
+            {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+
     {% block body %}
     {% endblock %}
 </div>

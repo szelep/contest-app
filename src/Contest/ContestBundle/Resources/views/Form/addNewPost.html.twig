@@ -1,4 +1,11 @@
- {% form_theme form 'jquery.collection.html.twig' %}
+{% form_theme form 'jquery.collection.html.twig' %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <b>Pierwszy</b> plik będzie miniaturą.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
 {{ form_start(form, {'action': path('add_new_post', { 'id': contest_id } )}) }}
 
 {{ form_end(form) }}

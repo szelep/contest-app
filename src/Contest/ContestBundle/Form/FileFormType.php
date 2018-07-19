@@ -17,7 +17,7 @@ class FileFormType extends AbstractType
     {
         $builder
             ->add('file', FileType::class, array(
-                'required' => false,
+                'required' => true,
                 'label' => false,
             ));
     }

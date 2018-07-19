@@ -1,11 +1,14 @@
 {% extends('base.html.twig') %}
-    {% block body %}
+{% block modals %}
+    {% include('@Contest/Default/modal.html.twig') %}
+{% endblock %}
+{% block body %}
     <b>{{ contest_title }}</b><br />
     <div class="card-columns">
     {% for post in post_list %}
         <div class="card">
         <!--<img class="card-img-top" src=".../100px180/" alt="Card image cap"> -->
-            <div class="card-body">
+            <div class="card-body" data-post="{{ path('show_post', {'id' : post.id}) }}" data-toggle="modal" data-target="#myModal">
                 <h5 class="card-title">Wpis</h5>
                 <p class="card-text">
                      <br/>
@@ -18,7 +21,7 @@
             </div>
         </div>
     {% endfor %}
+    <button type="button" class="btn btn-success" data-contest="{{ path('add_new_post', {'id' : contest_id}) }}" data-toggle="modal" data-target="#myModal">Dodaj</button>
     </div>
-    {% include('@Contest/Default/modal.html.twig') %}
-
+    
 {% endblock %}

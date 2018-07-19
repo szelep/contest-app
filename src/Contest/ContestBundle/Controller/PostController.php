@@ -16,7 +16,6 @@ class PostController extends Controller
      */
     public function addNewPostAction(Request $request, $id)
     {
-        
         $contestService = $this->container->get('contest_service');
         $fileService = $this->container->get('file_service');
         $contest = $contestService->findContest($id);
@@ -28,8 +27,6 @@ class PostController extends Controller
             $formData = $form->getData();
             $media = $formData->getMedia();
             
-            
-
             $entityManager = $this->getDoctrine()->getManager();
             $formData
                 ->setAuthor($this->getUser())
@@ -42,6 +39,12 @@ class PostController extends Controller
             $entityManager->flush();
 
             $fileService->manageMultipleUpload($media, $post);
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+
+            return $this->redirectToRoute('show_contest', array('id' => $id));
         }
 
         return $this->render('@Contest/Form/addNewPost.html.twig', array(
@@ -57,5 +60,7 @@ class PostController extends Controller
     {
         $contestService = $this->container->get('contest_service');
         $post = $contestService->findPost($id);
+
+        return $this->render('@Contest/Default/postModal.html.twig', array( ));
     }
 }
