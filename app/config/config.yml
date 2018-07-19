@@ -134,10 +134,6 @@ easy_admin:
            # edit:
                # fields:
                    # - { property: 'thumbnail', label: 'Miniatura konkursu' }
-            new:
-                fields:
-                    - { type: 'group', css_class: 'col-sm-6 new-row', label: 'Miniatura konkursu', icon: 'image' }
-                    - { property: 'thumbnail', type: 'file', label: 'Miniatura konkursu' }
             permissions:
                 list:  ['ROLE_MODERATOR']
                 create:  ['ROLE_ADMIN']
@@ -180,3 +176,15 @@ vich_uploader:
         thumbnail_images:
             uri_prefix:         '%app.path.thumbnail_images'
             upload_destination: '%kernel.root_dir%/../web%app.path.thumbnail_images%'
+            
+liip_imagine:
+    resolvers:
+        default:
+            web_path: ~
+    filter_sets:
+        cache: ~
+        contest_thumbnail:
+            quality: 75
+            filters:
+                thumbnail: { size: [120, 90], mode: outbound }
+                background: { size: [124, 94], position: center, color: '#000000' }

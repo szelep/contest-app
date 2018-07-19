@@ -74,7 +74,7 @@ class Template
      *
      * @ORM\Column(name="background_color", type="string", length=20, nullable=true)
      */
-    private $backgroundColor;
+    private $backgroundColor = "#ffffff";
 
     /**
      * @var string

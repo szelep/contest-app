@@ -22,6 +22,8 @@ class File
      */
     private $id;
 
+    private $file;
+
     /**
      * @var string
      *
@@ -235,6 +237,26 @@ class File
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Get the value of file
+     */ 
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Set the value of file
+     *
+     * @return  self
+     */ 
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
     }
 }
 

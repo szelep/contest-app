@@ -1,0 +1,24 @@
+{% extends('base.html.twig') %}
+    {% block body %}
+    <b>{{ contest_title }}</b><br />
+    <div class="card-columns">
+    {% for post in post_list %}
+        <div class="card">
+        <!--<img class="card-img-top" src=".../100px180/" alt="Card image cap"> -->
+            <div class="card-body">
+                <h5 class="card-title">Wpis</h5>
+                <p class="card-text">
+                     <br/>
+                    {{ post.getComments()|length }}
+                </p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Dodano: {{ post.createdAt|date('Y-m-d H:i') }} przez: {{ post.author }}</small>
+                <i class="fa fa-heart"></i> {{ post.votes }}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    {% include('@Contest/Default/modal.html.twig') %}
+
+{% endblock %}

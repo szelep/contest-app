@@ -1,0 +1,24 @@
+<button type="button" class="btn btn-success" data-contest="{{ path('add_new_post', {'id' : contest_id}) }}" data-toggle="modal" data-target="#myModal">Dodaj</button>
+
+<div class="modal" id="myModal" tabindex="1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dodaj nowy wpis do <i>{{ contest_title }}</i></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Trwa ładowanie treści...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odrzuć</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    var maxFiles = {{ max_files }};
+</script>

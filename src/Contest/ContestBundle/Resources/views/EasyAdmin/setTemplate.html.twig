@@ -14,6 +14,17 @@
                     <div class="form-group  field-text">
                         <label class="control-label">Miniatura konkursu</label><br />
                         {{ form_widget(form.thumbnail) }}
+                        <div class="helper">
+                            <i class="fa fa-info-circle"></i>
+                            Obraz zostanie przeskalowany do szerokości: {{ info.k_width }}px
+                        </div>
+                        <div>
+                        {% if elements.thumbnail is defined %}
+                            <hr />
+                            <img src="{{ asset('upload/template/'~elements.thumbnail)|imagine_filter('contest_thumbnail') }}"><br />
+                            <button class="btn btn-danger btn-xs">Usuń</button>
+                        {% endif %}
+                        </div>
                     </div>
                     <hr />         
                     <div class="form-group  field-text">
@@ -63,13 +74,20 @@
                         Podgląd
                     </h3>
                 </div>
-                <div class="box-body" style="height: 500px">
+                <div class="box-body">
                     <div style="border: 1px solid #dedede">
                         <div style="padding: 10px">
-                        <img src="{{ asset('upload/template/5b476f4c2b160.jpeg') }}">
-                            <div id="header-image">Obraz nagłówka</div>
-                            <div id="post-list">Lista wpisów konkursowych</div>
-                            <div id="footer-image">Obraz stopki</div>
+                            <div id="header-image">
+                            {% if elements.header_image is defined %}
+                                <img src="{{ asset('upload/template/'~elements.header_image) }}"><br />
+                            {% endif %}
+                            </div>
+                            <div id="post-list">TUTAJ BĘDZIE PODGLĄD KAFELKÓW WPISÓW KONKURSOWYCH :)</div>
+                            <div id="footer-image">
+                            {% if elements.footer_image is defined %}
+                                <img src="{{ asset('upload/template/'~elements.footer_image) }}"><br />
+                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
