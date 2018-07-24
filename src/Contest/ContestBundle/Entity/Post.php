@@ -59,7 +59,7 @@ class Post
     /**
      * @var ArrayCollection
      * 
-     * @ORM\OneToMany(targetEntity="File", mappedBy="contest", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Media", mappedBy="post", cascade={"remove"})
      */
     protected $media;
 

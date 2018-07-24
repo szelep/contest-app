@@ -1,1 +1,25 @@
-CONTEST DETAILS HERE
+        <div class="d-inline-block">
+        
+            {% for media in parameters.media %}
+                <img src="{{ media|media(media) }}"/>
+            {% endfor %}
+        </div>
+        
+        <div class="d-inline-block">
+            <div class="d-block p-2 bg-primary text-white">
+                <b>Dodane przez:</b> {{ parameters.author }}
+            </div>
+
+            <div class="d-block p-2 bg-primary text-white">
+                <small class="text-white">
+                    {{ parameters.postDate|date('Y-m-d H:i:s') }}
+                </small>
+            </div>
+
+            <div class="d-block p-2 bg-primary text-white">
+                {{ form(parameters.comment_form) }}
+            </div>
+        </div>
+
+
+<div id="error-box"></div>

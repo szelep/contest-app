@@ -6,8 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use ContestBundle\Form\PostType;
+use ContestBundle\Form\CommentType;
 use ContestBundle\Entity\Post;
 use ContestBundle\Service\ContestService;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 class PostController extends Controller
 {
@@ -35,8 +38,8 @@ class PostController extends Controller
                 ->setContest($contest)
             ;
 
-            $entityManager->persist($formData);
-            $entityManager->flush();
+           $entityManager->persist($formData);
+           $entityManager->flush();
 
             $fileService->manageMultipleUpload($media, $post);
             $this->addFlash(
@@ -60,7 +63,54 @@ class PostController extends Controller
     {
         $contestService = $this->container->get('contest_service');
         $post = $contestService->findPost($id);
+        $postHref = $this->generateUrl('show_post', array('id' => $id));
+        $commentForm = $this->createForm(CommentType::class, null, array(
+            'post_href' => $postHref
+        ));
 
-        return $this->render('@Contest/Default/postModal.html.twig', array( ));
+        $parameters = array(
+            'media' => $post->getMedia(),
+            'author' => $post->getAuthor(),
+            'postDate' => $post->getCreatedAt(),
+            'votes' => $post->getVotes(),
+            'comments' => $post->getComments(),
+            'comment_form' => $commentForm->createView(),
+        );
+
+        $errors = array();
+
+        $commentForm->handleRequest($request);
+        if ('POST' === $request->getMethod()) {
+                if ($commentForm->isValid()) {
+                    echo 'VALID';
+                } else {
+                    $validator = $this->get('validator');
+                    $errorsValidator = $validator->validate($commentForm);
+
+                    foreach ($errorsValidator as $error) {
+                        array_push($errors, $error->getMessage());
+                    }
+
+                    return new JsonResponse(array(
+                        'code' => 400,
+                        'message' => 'error',
+                        'errors' => array('errors' => $errors)),
+                        400);
+                }
+                
+                $entityManager = $this->getDoctrine()->getManager();
+
+                $formData = $commentForm->getData();
+                $formData
+                    ->setAuthor($this->getUser())
+                    ->setPost($post)
+                    ->setVotes(0);
+                $entityManager->persist($formData);
+                $entityManager->flush();
+        }
+
+        return $this->render('@Contest/Default/postModal.html.twig', array(
+            'parameters' => $parameters
+        ));
     }
 }

@@ -4,27 +4,87 @@ require('bootstrap');
 require('../css/global.scss');
 require('../js/custom.js');
 require('symfony-collection');
+
 var html = {
     'loading': '<div class="d-flex justify-content-center"><i style="font-size:5em" class="fa fa-circle-o-notch fa-spin"></i></div>',
     'buttonAdd': '<a href="#" class="btn btn-success btn-sm">Dodaj</a>',
     'buttonRemove': '<a href="#" class="d-flex justify-content-center btn btn-danger btn-sm">Usuń</a>'
 }
 
-
 $(document).ready(function (){
     $("button[data-contest]").click(function () {
+        setModalWidth('addNew');
         var url = $(this).data('contest');
         loading();
         loadDataToModal(url, 'contest');
     })
 
     $('[data-post]').click(function () {
+        setModalWidth('showPost');
         var url = $(this).data('post');
         loading();
         loadDataToModal(url, 'post');
     })
 })
 
+$(document).on('click', 'button[data-send]', function (e){
+    e.preventDefault();
+
+    var form = $(this).closest('form');
+    
+    $.ajax(
+        {
+            url: form.find('button[type="submit"]').data('href'),
+            type: "POST",
+            data: form.serialize(),
+            success: function (result)
+            {
+                cleanErrors();
+                cleanInputs(form);
+            },
+            error: function (result)
+            {
+                writeErrors(result.responseJSON.errors);
+            }
+        });
+})
+
+function cleanInputs(item)
+{
+    item.find('textarea, input[type="text"]').val('');
+}
+
+function writeErrors(errors)
+{
+    var errorHtml = '<div class="alert alert-danger">' + errors.errors[0] + '</div>';
+    $('#error-box').html(errorHtml);
+}
+
+function cleanErrors()
+{
+    $('#error-box').html('');
+}
+
+/**
+ * Zmiana szerokości modalu.
+ * 
+ * @param {string} state 
+ */
+function setModalWidth(state)
+{
+    var modalDialog = $('.modal-dialog');
+    switch (state) {
+        case 'addNew': modalDialog.removeClass('modal-lg'); break;
+        case 'showPost': modalDialog.addClass('modal-lg'); break;
+    }
+}
+
+/**
+ * Ładuje dane do modalu.
+ * 
+ * @param {string} url 
+ * @param {string} item 
+ */
 function loadDataToModal(url, item)
 {
     $.get( url, function( data ) {
@@ -44,6 +104,9 @@ function loadDataToModal(url, item)
     });
 }
 
+/**
+ * Pokazuje animację ładowania w modalu.
+ */
 function loading()
 {
     $('.modal-body').html(html.loading);

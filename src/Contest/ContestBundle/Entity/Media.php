@@ -30,21 +30,13 @@ class Media
     /**
      * @var string
      *
-     * @ORM\Column(name="media_type", type="string", length=255)
-     */
-    private $mediaType;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="thumbnail", type="string", length=255)
      */
     private $thumbnail;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="file", type="string", length=255)
+     * @ORM\OneToOne(targetEntity="File")
+     * @ORM\JoinColumn(name="file_id", referencedColumnName="id")
      */
     private $file;
 
@@ -59,51 +51,27 @@ class Media
     }
 
     /**
-     * Set contest
+     * Set post
      *
      * @param string $contest
      *
      * @return Media
      */
-    public function setContest($contest)
+    public function setPost($post)
     {
-        $this->contest = $contest;
+        $this->post = $post;
 
         return $this;
     }
 
     /**
-     * Get contest
+     * Get post
      *
      * @return string
      */
-    public function getContest()
+    public function getPost()
     {
-        return $this->contest;
-    }
-
-    /**
-     * Set mediaType
-     *
-     * @param string $mediaType
-     *
-     * @return Media
-     */
-    public function setMediaType($mediaType)
-    {
-        $this->mediaType = $mediaType;
-
-        return $this;
-    }
-
-    /**
-     * Get mediaType
-     *
-     * @return string
-     */
-    public function getMediaType()
-    {
-        return $this->mediaType;
+        return $this->post;
     }
 
     /**
@@ -133,7 +101,7 @@ class Media
     /**
      * Set file
      *
-     * @param string $file
+     * @param File $file
      *
      * @return Media
      */
@@ -147,7 +115,7 @@ class Media
     /**
      * Get file
      *
-     * @return string
+     * @return File
      */
     public function getFile()
     {

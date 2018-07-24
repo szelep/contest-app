@@ -53,17 +53,10 @@ class File
     private $fileSize;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="mime_type", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="Filetype")
+     * @ORM\JoinColumn(name="filetype_id", referencedColumnName="id")
      */
-    private $mimeType;
-
-    /**
-    * @ORM\ManyToOne(targetEntity="Post", inversedBy="comments")
-    * @ORM\JoinColumn(name="post_id", referencedColumnName="id")
-    */
-    protected $post;
+    private $filetype;
 
 
     /**
@@ -134,51 +127,27 @@ class File
     }
 
     /**
-     * Set mimeType
+     * Set filetype
      *
-     * @param string $mimeType
+     * @param Filetype $filetype
      *
      * @return File
      */
-    public function setMimeType($mimeType)
+    public function setFiletype(Filetype $filetype)
     {
-        $this->mimeType = $mimeType;
+        $this->filetype = $filetype;
 
         return $this;
     }
 
     /**
-     * Get mimeType
+     * Get fileType
      *
-     * @return string
+     * @return Filetype
      */
-    public function getMimeType()
+    public function getFiletype()
     {
-        return $this->mimeType;
-    }
-
-    /**
-     * Set post
-     *
-     * @param string $post
-     *
-     * @return File
-     */
-    public function setPost($post)
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
-    /**
-     * Get post
-     *
-     * @return string
-     */
-    public function getPost()
-    {
-        return $this->post;
+        return $this->filetype;
     }
 
     /**
