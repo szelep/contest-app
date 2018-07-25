@@ -17,12 +17,14 @@ class CommentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $tempZnaki = 280;
         $builder
         ->add('value', TextareaType::class, array(
             'label' => 'Treść komentarza',
             'constraints' => array(
                 new Assert\Length(array(
-                    'max' => 280,
+                    'max' => $tempZnaki,
+                    'maxMessage' => 'Komentarz nie może być dłuższy niż ' . $tempZnaki . ' znaków.',
                 )),
                 new Assert\NotBlank(array(
                     'message' => 'Komentarz nie może być pusty!'

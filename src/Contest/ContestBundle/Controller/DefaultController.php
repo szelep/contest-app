@@ -30,7 +30,7 @@ class DefaultController extends Controller
 
         return $this->render('@Contest/MainPage/contestPage.html.twig', array(
             'contest_title' => $contest->getTitle(),
-            'post_list' => $contest->getPosts(),
+            'post_list' => $contest->getPublishedPosts(),
             'template'  => $contest->getTemplate(),
             'contest_id' => $contest->getId(),
             'max_files' => $contest->getMediaCountLimit(),

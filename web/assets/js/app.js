@@ -31,7 +31,7 @@ $(document).on('click', 'button[data-send]', function (e){
     e.preventDefault();
 
     var form = $(this).closest('form');
-    
+
     $.ajax(
         {
             url: form.find('button[type="submit"]').data('href'),
@@ -39,15 +39,32 @@ $(document).on('click', 'button[data-send]', function (e){
             data: form.serialize(),
             success: function (result)
             {
-                cleanErrors();
                 cleanInputs(form);
             },
             error: function (result)
             {
-                writeErrors(result.responseJSON.errors);
+                //maybe coś
             }
+        })
+        .always(function (result)
+        {
+            cleanErrors();
+            alertFadeIn();
+            writeErrors(result);
+            alertFadeOut();
         });
 })
+
+
+function alertFadeOut()
+{
+    $('#error-box').delay(2000).fadeOut("fast");
+}
+
+function alertFadeIn()
+{
+    $('#error-box').fadeIn("fast"); 
+}
 
 function cleanInputs(item)
 {
@@ -56,8 +73,21 @@ function cleanInputs(item)
 
 function writeErrors(errors)
 {
-    var errorHtml = '<div class="alert alert-danger">' + errors.errors[0] + '</div>';
+    var errorHtml = '<div class="alert alert-' + (errors.status === 'error' ? 'danger' : 'success') + '">' + 
+    parseErrorArray(errors) + '</div>';
     $('#error-box').html(errorHtml);
+}
+
+function parseErrorArray(errors)
+{
+    var errorString = '';
+
+    for (i = 0; i < errors.message.length ; i++) {
+        errorString += errors.message[i] + '<br>';
+    }
+
+    return errorString;
+
 }
 
 function cleanErrors()

@@ -10,6 +10,7 @@ use ContestBundle\Entity\Template;
 use ContestBundle\Entity\Notification;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Contest
@@ -913,6 +914,20 @@ class Contest
         $this->template = $template;
 
         return $this;
+    }
+
+    /**
+     * Return only published posts
+     */
+    public function getPublishedPosts()
+    {
+        $posts = $this->getPosts();
+
+        $criteria = Criteria::create()
+                    ->where(Criteria::expr()->eq('published', true));
+        $publishedPosts = $posts->matching($criteria);
+
+        return $publishedPosts;
     }
 }
 

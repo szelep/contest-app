@@ -4,13 +4,16 @@ namespace ContestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use ContestBundle\Form\PostType;
 use ContestBundle\Form\CommentType;
+use ContestBundle\Form\VoteType;
 use ContestBundle\Entity\Post;
+use ContestBundle\Entity\Vote;
 use ContestBundle\Service\ContestService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class PostController extends Controller
 {
@@ -36,6 +39,7 @@ class PostController extends Controller
                 ->setThumbnail('x')
                 ->setMedia(null)
                 ->setContest($contest)
+                ->setPublished($contest->getAutoPublishNewPost())
             ;
 
            $entityManager->persist($formData);
@@ -63,18 +67,26 @@ class PostController extends Controller
     {
         $contestService = $this->container->get('contest_service');
         $post = $contestService->findPost($id);
+        $contest = $post->getContest();
         $postHref = $this->generateUrl('show_post', array('id' => $id));
+        $voteHref = $this->generateUrl('vote', array('id' => $id));
+
         $commentForm = $this->createForm(CommentType::class, null, array(
             'post_href' => $postHref
         ));
 
+        $voteForm = $this->createForm(VoteType::class, null, array(
+            'post_href' => $voteHref
+        ));
+
         $parameters = array(
-            'media' => $post->getMedia(),
-            'author' => $post->getAuthor(),
-            'postDate' => $post->getCreatedAt(),
-            'votes' => $post->getVotes(),
-            'comments' => $post->getComments(),
-            'comment_form' => $commentForm->createView(),
+            'media'         => $post->getMedia(),
+            'author'        => $post->getAuthor(),
+            'postDate'      => $post->getCreatedAt(),
+            'votes'         => count($post->getVotes()),
+            'comments'      => $post->getComments(),
+            'comment_form'  => $commentForm->createView(),
+            'vote_form'     => $voteForm->createView(),  
         );
 
         $errors = array();
@@ -93,9 +105,11 @@ class PostController extends Controller
 
                     return new JsonResponse(array(
                         'code' => 400,
-                        'message' => 'error',
-                        'errors' => array('errors' => $errors)),
-                        400);
+                        'status'  => 'error',
+                        'message' => $errors,
+                        ),
+                        400
+                    );
                 }
                 
                 $entityManager = $this->getDoctrine()->getManager();
@@ -112,5 +126,45 @@ class PostController extends Controller
         return $this->render('@Contest/Default/postModal.html.twig', array(
             'parameters' => $parameters
         ));
+    }
+
+    /**
+     * @Route("/contest/post/vote/{id}", name="vote")
+     * @Method("POST")
+     */
+    public function voteAction($id)
+    {
+        // 1. trzeba sprawdzić czy pozwala na głsoowanie konkurs
+        // 2. trzeba sprawdzić czy szkodnik nie zagłosował na zbyt dużo
+        // 3. zrobić w serwisie opcje która sprawdza czy dany konkurs jest aktualy czyt czy data głosowania nie minęła
+        // 4. przy dodawaniu/usuwaniu vote musi sprawdzać czy może to zrobić
+        // 5. wystarczy serwis który odbierze wszystkie możliwości gdy konkurs jest po terminie/odpublikowany
+        //
+        
+
+        $contestService = $this->container->get('contest_service');
+        $post = $contestService->findPost($id);
+
+        $voteStatus = $contestService->manageVote($this->getUser(), $post);
+
+        if (false === $voteStatus) {
+            $jsonResponse = array(
+                'status'  => 'success',
+                'message' => 'Oddano głos!',
+            );
+        } elseif (false !== $voteStatus) {
+            $jsonResponse = array(
+                'status'  => 'error',
+                'message' => 'Usunięto głos!',
+            );
+        }
+
+        return new JsonResponse(array(
+            'code'    => 200,
+            'status'  => $jsonResponse['status'],
+            'message' => array($jsonResponse['message'])
+            ),
+            200
+        );
     }
 }

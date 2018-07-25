@@ -17,7 +17,7 @@
             </div>
             <div class="card-footer">
                 <small class="text-muted">Dodano: {{ post.createdAt|date('Y-m-d H:i') }} przez: {{ post.author }}</small>
-                <i class="fa fa-heart"></i> {{ post.votes }}
+                <i class="fa fa-heart"></i> {{ post.votes|length }}
             </div>
         </div>
     {% endfor %}

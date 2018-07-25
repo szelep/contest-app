@@ -64,9 +64,19 @@ class Post
     protected $media;
 
     /**
-     * @var int
+     * @var bool
      *
-     * @ORM\Column(name="votes", type="integer", nullable=true)
+     * @ORM\Column(
+     *     name="published",
+     *     type="boolean",
+     *     nullable=false,
+     *     options={"default": 0}
+     * )
+     */
+    protected $published = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Vote", mappedBy="post")
      */
     protected $votes = 0;
 
@@ -74,6 +84,7 @@ class Post
     public function __construct() {
         $this->media = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     public function __toString()
@@ -149,19 +160,19 @@ class Post
         return $this->thumbnail;
     }
 
-    /**
+    /*
      * Set comments
      *
      * @param array $comments
      *
      * @return Post
      */
-    public function setComments($comments)
+   /* public function setComments($comments)
     {
         $this->comments = $comments;
 
         return $this;
-    }
+    }*/
 
     /**
      * Get comments
@@ -237,6 +248,18 @@ class Post
     public function setContest($contest)
     {
         $this->contest = $contest;
+
+        return $this;
+    }
+
+    public function getPublished()
+    {
+        return $this->published;
+    }
+
+    public function setPublished($published)
+    {
+        $this->published = $published;
 
         return $this;
     }

@@ -1,4 +1,5 @@
-        <div class="d-inline-block">
+   <div class="container">   
+     <div class="d-inline-block">
         
             {% for media in parameters.media %}
                 <img src="{{ media|media(media) }}"/>
@@ -6,20 +7,35 @@
         </div>
         
         <div class="d-inline-block">
-            <div class="d-block p-2 bg-primary text-white">
+            <div class="d-block bg-primary text-white">
                 <b>Dodane przez:</b> {{ parameters.author }}
             </div>
 
-            <div class="d-block p-2 bg-primary text-white">
+            <div class="d-block bg-primary text-white">
                 <small class="text-white">
                     {{ parameters.postDate|date('Y-m-d H:i:s') }}
                 </small>
             </div>
 
-            <div class="d-block p-2 bg-primary text-white">
+            <div class="d-block bg-primary text-white">
                 {{ form(parameters.comment_form) }}
+            </div>
+            <div class="block">
+            <b>głosy:</b> {{ parameters.votes }}<br />
+                {{ form(parameters.vote_form) }}
+            </div>
+            <div class="block">
+                Komentarze: <br />
+
+                {% for comment in parameters.comments %}
+                    <div class="bg-primary">
+                        {{ comment.value }} - {{ comment.author }} <br />
+                        {{ comment.createdAt|date('Y-m-d H:i:s') }}
+                    </div> <br />
+                {% endfor %}
             </div>
         </div>
 
 
 <div id="error-box"></div>
+</div>
