@@ -11,6 +11,8 @@ var html = {
     'buttonRemove': '<a href="#" class="d-flex justify-content-center btn btn-danger btn-sm">Usuń</a>'
 }
 
+var postUrl = '';
+
 $(document).ready(function (){
     $("button[data-contest]").click(function () {
         setModalWidth('addNew');
@@ -22,6 +24,7 @@ $(document).ready(function (){
     $('[data-post]').click(function () {
         setModalWidth('showPost');
         var url = $(this).data('post');
+        postUrl = url;
         loading();
         loadDataToModal(url, 'post');
     })
@@ -58,6 +61,7 @@ $(document).on('click', 'button[data-send]', function (e){
             data: form.serialize(),
             success: function (result)
             {
+                loadDataToModal(null, 'post');
                 cleanInputs(form);
             },
             error: function (result)
@@ -154,6 +158,9 @@ function setModalWidth(state)
  */
 function loadDataToModal(url, item)
 {
+    if (null === url) {
+        url = postUrl;
+    }
     $.get( url, function( data ) {
         $( ".modal-body" ).html( data );
         if ('contest' === item) {

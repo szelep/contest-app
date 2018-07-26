@@ -26,16 +26,17 @@
             </div>
             <div class="block">
                 Komentarze: <br />
-
-                {% for comment in parameters.comments %}
-                    <div class="bg-primary comment-box d-block">
-                        {{ comment.value }} - {{ comment.author }} <br />
-                        {{ comment.createdAt|date('Y-m-d H:i:s') }}
-                        {% if app.user.username == comment.author %}
-                            <a data-action="remove-comment" class="method-post fa fa-trash text-danger" href="{{ path('remove_comment', {'id' : comment.id}) }}"></a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+                <div class="comments-container">
+                    {% for comment in parameters.comments %}
+                        <div class="bg-primary comment-box d-block">
+                            {{ comment.value }} - {{ comment.author }} <br />
+                            {{ comment.createdAt|date('Y-m-d H:i:s') }}
+                            {% if app.user.username == comment.author %}
+                                <a data-action="remove-comment" class="method-post fa fa-trash text-danger" href="{{ path('remove_comment', {'id' : comment.id}) }}"></a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
