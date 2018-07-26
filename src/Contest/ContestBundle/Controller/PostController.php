@@ -46,7 +46,7 @@ class PostController extends Controller
 
 
             $fileUpload = $fileService->manageMultipleUpload($media, $post);
-         //   var_dump($fileUpload); die();
+
             if (false === $fileUpload) {
                 $accessService = $this->container->get('access_service');
                 $allowedTypes = implode(',', $accessService->findAllowedFileTypes($post));

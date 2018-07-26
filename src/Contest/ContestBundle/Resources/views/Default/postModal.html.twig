@@ -1,11 +1,11 @@
-   <div class="container">   
+   <div class="container">
      <div class="d-inline-block">
-        
+
             {% for media in parameters.media %}
                 <img src="{{ media|media(media) }}"/>
             {% endfor %}
         </div>
-        
+
         <div class="d-inline-block">
             <div class="d-block bg-primary text-white">
                 <b>Dodane przez:</b> {{ parameters.author }}
@@ -31,6 +31,9 @@
                     <div class="bg-primary">
                         {{ comment.value }} - {{ comment.author }} <br />
                         {{ comment.createdAt|date('Y-m-d H:i:s') }}
+                        {% if app.user.username == comment.author %}
+                            <a href="#" class="comment-remove fa fa-trash text-danger"></a>
+                        {% endif %}
                     </div> <br />
                 {% endfor %}
             </div>

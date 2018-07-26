@@ -23,9 +23,8 @@ class Comment
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="author", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $author;
 
@@ -156,7 +155,7 @@ class Comment
 
     /**
      * Get the value of post
-     */ 
+     */
     public function getPost()
     {
         return $this->post;
@@ -166,7 +165,7 @@ class Comment
      * Set the value of post
      *
      * @return  self
-     */ 
+     */
     public function setPost($post)
     {
         $this->post = $post;
