@@ -27,6 +27,25 @@ $(document).ready(function (){
     })
 })
 
+$(document).on('click', '.method-post', function (e){
+    e.preventDefault();
+    var url = $(this).attr('href');
+    makeAction($(this));
+    $.ajax(
+        {
+            url: url,
+            type: "POST",
+            success: function (result)
+            {
+                writeErrors(result);
+            },
+            error: function (result)
+            {
+                writeErrors(result);
+            }
+        })
+})
+
 $(document).on('click', 'button[data-send]', function (e){
     e.preventDefault();
 
@@ -55,6 +74,22 @@ $(document).on('click', 'button[data-send]', function (e){
         });
 })
 
+function makeAction(object)
+{
+    var action = object.data('action');
+    switch (action) {
+        case 'remove-comment':
+            removeComment(object);
+            break;
+    }
+}
+
+function removeComment(object)
+{
+    object.closest('.comment-box').fadeOut('slow', function (){
+        $(this).remove();
+    });
+}
 
 function alertFadeOut()
 {
@@ -63,7 +98,7 @@ function alertFadeOut()
 
 function alertFadeIn()
 {
-    $('#error-box').fadeIn("fast"); 
+    $('#error-box').fadeIn("fast");
 }
 
 function cleanInputs(item)
@@ -73,9 +108,11 @@ function cleanInputs(item)
 
 function writeErrors(errors)
 {
-    var errorHtml = '<div class="alert alert-' + (errors.status === 'error' ? 'danger' : 'success') + '">' + 
-    parseErrorArray(errors) + '</div>';
-    $('#error-box').html(errorHtml);
+    if (errors.message !== undefined) {
+        var errorHtml = '<div class="alert alert-' + (errors.status === 'error' ? 'danger' : 'success') + '">' +
+        parseErrorArray(errors) + '</div>';
+        $('#error-box').html(errorHtml);
+    }
 }
 
 function parseErrorArray(errors)
@@ -97,8 +134,8 @@ function cleanErrors()
 
 /**
  * Zmiana szerokości modalu.
- * 
- * @param {string} state 
+ *
+ * @param {string} state
  */
 function setModalWidth(state)
 {
@@ -111,9 +148,9 @@ function setModalWidth(state)
 
 /**
  * Ładuje dane do modalu.
- * 
- * @param {string} url 
- * @param {string} item 
+ *
+ * @param {string} url
+ * @param {string} item
  */
 function loadDataToModal(url, item)
 {
@@ -130,7 +167,7 @@ function loadDataToModal(url, item)
                 add: html.buttonAdd,
                 remove: html.buttonRemove
             });
-        }   
+        }
     });
 }
 

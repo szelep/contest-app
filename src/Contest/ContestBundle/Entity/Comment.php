@@ -5,14 +5,19 @@ namespace ContestBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
+
+
 /**
  * Comment
  *
  * @ORM\Table(name="comment")
  * @ORM\Entity(repositoryClass="ContestBundle\Repository\CommentRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  */
 class Comment
 {
+    use Traits\SoftdeletableTrait;
+
     /**
      * @var int
      *
