@@ -1,15 +1,23 @@
 <script src="{{ asset('build/app.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('build/app.css') }}" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-
+<html>
+<body>
 <div class="container">
     {% block modals %}
     {% endblock %}
-    
+
     <div class="flash-container">
     {% for message in app.flashes('notice') %}
         <div class="flash-notice">
             {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="flash-notice">
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
         </div>
     {% endfor %}
     </div>
@@ -17,3 +25,5 @@
     {% block body %}
     {% endblock %}
 </div>
+</body>
+</html>

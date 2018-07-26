@@ -3,7 +3,7 @@
 namespace ContestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use ContestBundle\Form\PostType;
@@ -32,7 +32,7 @@ class PostController extends Controller
         if ('POST' === $request->getMethod()) {
             $formData = $form->getData();
             $media = $formData->getMedia();
-            
+
             $entityManager = $this->getDoctrine()->getManager();
             $formData
                 ->setAuthor($this->getUser())
@@ -43,13 +43,21 @@ class PostController extends Controller
             ;
 
            $entityManager->persist($formData);
-           $entityManager->flush();
 
-            $fileService->manageMultipleUpload($media, $post);
-            $this->addFlash(
-                'notice',
-                'Your changes were saved!'
-            );
+
+            $fileUpload = $fileService->manageMultipleUpload($media, $post);
+         //   var_dump($fileUpload); die();
+            if (false === $fileUpload) {
+                $accessService = $this->container->get('access_service');
+                $allowedTypes = implode(',', $accessService->findAllowedFileTypes($post));
+
+                $this->addFlash(
+                    'error',
+                    'Jeden lub więcej plików ma nieprawnidłowe rozszerzenie. Dopuszczalne typy plików: ' . $allowedTypes
+                );
+            } elseif (false !== $fileUpload) {
+                $entityManager->flush();
+            }
 
             return $this->redirectToRoute('show_contest', array('id' => $id));
         }
@@ -86,7 +94,7 @@ class PostController extends Controller
             'votes'         => count($post->getVotes()),
             'comments'      => $post->getComments(),
             'comment_form'  => $commentForm->createView(),
-            'vote_form'     => $voteForm->createView(),  
+            'vote_form'     => $voteForm->createView(),
         );
 
         $errors = array();
@@ -111,7 +119,7 @@ class PostController extends Controller
                         400
                     );
                 }
-                
+
                 $entityManager = $this->getDoctrine()->getManager();
 
                 $formData = $commentForm->getData();
@@ -130,6 +138,7 @@ class PostController extends Controller
 
     /**
      * @Route("/contest/post/vote/{id}", name="vote")
+     *
      * @Method("POST")
      */
     public function voteAction($id)
@@ -140,7 +149,7 @@ class PostController extends Controller
         // 4. przy dodawaniu/usuwaniu vote musi sprawdzać czy może to zrobić
         // 5. wystarczy serwis który odbierze wszystkie możliwości gdy konkurs jest po terminie/odpublikowany
         //
-        
+
 
         $contestService = $this->container->get('contest_service');
         $post = $contestService->findPost($id);

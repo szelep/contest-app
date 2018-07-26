@@ -18,3 +18,5 @@
 /web/upload/
 /node_modules/
 /web/build/*
+/web/media/cache/*
+tests/

@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Media
 {
+    const MEDIA_POST_TARGET = 1;
+    const MEDIA_TEMPLATE_TARGET = 2;
+
     /**
      * @var int
      *

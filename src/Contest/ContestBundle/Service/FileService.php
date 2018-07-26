@@ -4,6 +4,7 @@ namespace ContestBundle\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ContestBundle\Entity\Contest;
+use ContestBundle\Service\AccessService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use ContestBundle\Entity\File;
@@ -15,25 +16,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class FileService
 {
-    public function __construct(EntityManagerInterface $entityManager, $uploadDir)
+    private $thumbnailGenerated = false;
+
+    private $mediaTarget;
+
+    public function __construct(EntityManagerInterface $entityManager, $uploadDir, AccessService $accessService)
     {
         $this->entityManager = $entityManager;
         $this->uploadDir = $uploadDir;
+        $this->accessService = $accessService;
     }
 
     public function manageMultipleUpload(ArrayCollection $files, $post = null)
     {
         foreach ($files as $file)
         {
-           $persistedFile = $this->persistFile($file->getFile(), $post);
+            $persistedFile = $this->persistFile($file->getFile(), $post);
+
+            if (false === $persistedFile) {
+                return false;
+            }
 
             if (null !== $post) {
-                $allowedFileTypes = $this->findAllowedFileTypes($post);
-                if (in_array($persistedFile->getFiletype()->getValue(), $allowedFileTypes)) {
-                    $this->persistFileToMedia($post, $persistedFile);
-                } else {
-                    throw new IOException("niepoprawne rozszerzenie. zamien to na flash a nie exception! jakiś response");
-                }
+                $this->persistFileToMedia($post, $persistedFile);
             }
         }
     }
@@ -42,17 +47,26 @@ class FileService
         $file = new File();
         $fileName = $this->generateUniquename();
         $filetype = $this->findFiletype($uploadedFile->getMimeType());
+
         $file
             ->setFiletype($filetype)
             ->setExtension($uploadedFile->guessExtension())
             ->setFileSize($uploadedFile->getClientSize())
             ->setTempName($fileName)
             ->setOriginalName($uploadedFile->getClientOriginalName());
-        
+
         if (null !== $post) {
             $templatesDirectory = 'post';
+            $this->mediaTarget = Media::MEDIA_POST_TARGET;
+            $allowedType = $this
+                    ->accessService
+                    ->checkIsFileAllowedInContest($uploadedFile->getMimeType(), $post);
+            if (false === $allowedType) {
+                return false;
+            }
         } elseif (null === $post) {
             $templatesDirectory = 'template';
+            $this->mediaTarget = Media::MEDIA_TEMPLATE_TARGET;
         } else {
             throw new \Exception('Wystąpił błąd.');
         }
@@ -62,15 +76,19 @@ class FileService
             $filesDirectory,
             $templatesDirectory
         );
-        
+
         $uploadedFile->move(implode(\DIRECTORY_SEPARATOR, $fullPath), $fileName . '.' . $uploadedFile->guessExtension());
 
         $this
             ->entityManager
             ->persist($file);
-        $this
+       /* $this
             ->entityManager
-            ->flush();
+            ->flush();*/
+
+        if ($this->mediaTarget === Media::MEDIA_POST_TARGET) {
+
+        }
 
         return $file;
     }
@@ -84,20 +102,8 @@ class FileService
         if (null === $filetype) {
             throw new IOException('Wystąpił nieoczekiwany błąd - brak wpisu tego typu pliku.');
         }
-        
+
         return $filetype;
-    }
-
-    private function findAllowedFileTypes(Post $post)
-    {
-        $allowedFiles = $post->getContest()->getAllowedFiles();
-        $allowedTypesArray = array();
-
-        foreach ($allowedFiles as $allowedFile) {
-            $allowedTypesArray[] = $allowedFile->getValue();
-        }
-
-        return $allowedTypesArray;
     }
 
     private function persistFileToMedia(Post $post, File $file)
@@ -109,7 +115,7 @@ class FileService
             ->setThumbnail('e');
 
         $this->entityManager->persist($media);
-        $this->entityManager->flush();
+      //  $this->entityManager->flush();
     }
 
     private function generateUniqueName()

@@ -33,14 +33,18 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    access_service:
+        class: ContestBundle\Service\AccessService
+        arguments: []
+
     contest_service:
         class: ContestBundle\Service\ContestService
         arguments: ["@doctrine.orm.entity_manager", "@file_service"]
-    
+
     file_service:
         class: ContestBundle\Service\FileService
-        arguments: ["@doctrine.orm.entity_manager", "%upload_dir%"]
-    
+        arguments: ["@doctrine.orm.entity_manager", "%upload_dir%", "@access_service"]
+
     media_extension:
         class: ContestBundle\Twig\MediaExtension
         arguments: ["%media_dir%"]

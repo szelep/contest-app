@@ -12,7 +12,7 @@ use ContestBundle\Entity\File;
 use ContestBundle\Entity\Template;
 use ContestBundle\Form\TemplateType;
 use ContestBundle\Exception\AdminAccessRequiredException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
