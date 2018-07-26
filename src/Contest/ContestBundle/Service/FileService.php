@@ -13,6 +13,7 @@ use ContestBundle\Entity\Media;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use ContestBundle\Entity\Post;
 use Doctrine\Common\Collections\ArrayCollection;
+use \Eventviva\ImageResize;
 
 class FileService
 {
@@ -29,6 +30,7 @@ class FileService
 
     public function manageMultipleUpload(ArrayCollection $files, $post = null)
     {
+        $mediaFile = null;
         foreach ($files as $file)
         {
             $persistedFile = $this->persistFile($file->getFile(), $post);
@@ -38,8 +40,12 @@ class FileService
             }
 
             if (null !== $post) {
-                $this->persistFileToMedia($post, $persistedFile);
+                $mediaFile = $this->persistFileToMedia($post, $persistedFile);
             }
+        }
+
+        if ($mediaFile instanceof Media) {
+            return $mediaFile;
         }
     }
     public function persistFile(UploadedFile $uploadedFile, $post)
@@ -106,16 +112,70 @@ class FileService
         return $filetype;
     }
 
+    private function getPathToPostFile(File $file)
+    {
+        $fileName = $file->getTempName();
+        $fileExtension = $file->getExtension();
+
+        $fullPath = array(
+            $this->getPostUploadDir(),
+            $fileName . '.' . $fileExtension
+        );
+
+        $fullPath = implode(\DIRECTORY_SEPARATOR, $fullPath);
+
+        return $fullPath;
+    }
+
+    private function getPostUploadDir()
+    {
+        return $this->uploadDir . \DIRECTORY_SEPARATOR . 'post';
+    }
+
     private function persistFileToMedia(Post $post, File $file)
     {
         $media = new Media();
         $media
             ->setPost($post)
-            ->setFile($file)
-            ->setThumbnail('e');
+            ->setFile($file);
 
+
+
+
+            $image = new ImageResize($this->getPathToPostFile($file));
+
+
+
+            //wielkość miniatury ma być pobierana z tempalatki
+
+
+
+            $newFileName = $file->getTempName() . '_thmb';
+            $image->resize(200, 100, ImageResize::CROPCENTER);
+            $image->save($this->getPostUploadDir() .  \DIRECTORY_SEPARATOR . $newFileName . '.' . $file->getExtension());
+
+            $baseFile = clone $file;
+            $file = new File();
+            $file
+            ->setFiletype($baseFile->getFiletype())
+            ->setExtension($baseFile->getExtension())
+            ->setFileSize(0)
+            ->setTempName($newFileName)
+            ->setOriginalName($baseFile->getTempName());
+
+            $this->entityManager->persist($file);
+
+
+
+
+        $media->setThumbnail($file);
         $this->entityManager->persist($media);
-      //  $this->entityManager->flush();
+
+        if (false === $this->thumbnailGenerated)
+        {
+            return $media;
+            $this->thumbnailGenerated = true;
+        }
     }
 
     private function generateUniqueName()

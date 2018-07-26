@@ -31,9 +31,8 @@ class Media
     private $post;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="thumbnail", type="string", length=255)
+     * @ORM\OneToOne(targetEntity="File")
+     * @ORM\JoinColumn(name="thumbnail_file_id", referencedColumnName="id")
      */
     private $thumbnail;
 

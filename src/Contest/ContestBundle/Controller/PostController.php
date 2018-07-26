@@ -10,6 +10,7 @@ use ContestBundle\Form\PostType;
 use ContestBundle\Form\CommentType;
 use ContestBundle\Form\VoteType;
 use ContestBundle\Entity\Post;
+use ContestBundle\Entity\Media;
 use ContestBundle\Entity\Comment;
 use ContestBundle\Entity\Vote;
 use ContestBundle\Service\ContestService;
@@ -39,7 +40,6 @@ class PostController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $formData
                 ->setAuthor($this->getUser())
-                ->setThumbnail('x')
                 ->setMedia(null)
                 ->setContest($contest)
                 ->setPublished($contest->getAutoPublishNewPost())
@@ -50,6 +50,7 @@ class PostController extends Controller
 
             $fileUpload = $fileService->manageMultipleUpload($media, $post);
 
+
             if (false === $fileUpload) {
                 $accessService = $this->container->get('access_service');
                 $allowedTypes = implode(',', $accessService->findAllowedFileTypes($post));
@@ -59,6 +60,9 @@ class PostController extends Controller
                     'Jeden lub więcej plików ma nieprawnidłowe rozszerzenie. Dopuszczalne typy plików: ' . $allowedTypes
                 );
             } elseif (false !== $fileUpload) {
+                if ($fileUpload instanceof Media) {
+                    $formData->setThumbnail($fileUpload);
+                }
                 $entityManager->flush();
             }
 

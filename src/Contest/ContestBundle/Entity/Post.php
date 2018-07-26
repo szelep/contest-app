@@ -45,9 +45,8 @@ class Post
     protected $createdAt;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="thumbnail", type="string", length=255)
+     * @ORM\OneToOne(targetEntity="Media")
+     * @ORM\JoinColumn(name="thubmnail_media_id", referencedColumnName="id")
      */
     protected $thumbnail;
 
@@ -58,7 +57,7 @@ class Post
 
     /**
      * @var ArrayCollection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Media", mappedBy="post", cascade={"remove"})
      */
     protected $media;
@@ -234,7 +233,7 @@ class Post
 
     /**
      * Get the value of contest
-     */ 
+     */
     public function getContest()
     {
         return $this->contest;
@@ -244,7 +243,7 @@ class Post
      * Set the value of contest
      *
      * @return  self
-     */ 
+     */
     public function setContest($contest)
     {
         $this->contest = $contest;
