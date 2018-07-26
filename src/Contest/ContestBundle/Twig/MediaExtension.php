@@ -16,6 +16,7 @@ class MediaExtension extends AbstractExtension
     {
         return array(
             new TwigFilter('media', array($this, 'mediaFilter')),
+            new TwigFilter('mediaThumbnail', array($this, 'mediaThumbnailFilter')),
         );
     }
 
@@ -25,6 +26,19 @@ class MediaExtension extends AbstractExtension
         $extension = $media->getFile()->getExtension();
         $path = array(
             $this->mediaDir,
+            'post',
+            $fileName . '.' . $extension
+        );
+
+        return implode(\DIRECTORY_SEPARATOR, $path);
+    }
+
+    public function mediaThumbnailFilter($media)
+    {
+        $fileName = $media->getThumbnail()->getTempName();
+        $extension = $media->getThumbnail()->getExtension();
+        $path = array(
+           \DIRECTORY_SEPARATOR . $this->mediaDir,
             'post',
             $fileName . '.' . $extension
         );
