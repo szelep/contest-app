@@ -63,6 +63,10 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                enabled: true
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -130,7 +134,7 @@ easy_admin:
                     - { type: 'group', css_class: 'col-sm-6', label: 'Powiadomienia dla użytkownika', icon: 'envelope' }
                     - { property: 'sendNotifications', type: 'checkbox', label: 'Wysyłaj powiadomienia' }
                     - { property: 'notifications', label: 'Zakres powiadomień'}
-                    
+
            # edit:
                # fields:
                    # - { property: 'thumbnail', label: 'Miniatura konkursu' }
@@ -139,7 +143,7 @@ easy_admin:
                 create:  ['ROLE_ADMIN']
                 edit:  ['ROLE_MODERATOR']
                 delete:  ['ROLE_ADMIN']
-               
+
         Filetype:
             class: ContestBundle\Entity\Filetype
             form:
@@ -151,7 +155,7 @@ easy_admin:
         Post:
             class: ContestBundle\Entity\Post
             form:
-                fields: 
+                fields:
                     - { type: 'group', css_class: 'col-sm-7', label: 'Podstawowe informacje', icon: 'pencil' }
                     - { property: 'contest', label: 'Konkurs' }
                     - { property: 'author', label: 'Autor' }
@@ -163,12 +167,14 @@ easy_admin:
                 delete:  ['ROLE_ADMIN']
         Comment:
             class: ContestBundle\Entity\Comment
-            
+
 stof_doctrine_extensions:
     orm:
         default:
             timestampable: true
             sluggable: true
+            softdeleteable: true
+
 
 vich_uploader:
     db_driver: orm
@@ -176,7 +182,7 @@ vich_uploader:
         thumbnail_images:
             uri_prefix:         '%app.path.thumbnail_images'
             upload_destination: '%kernel.root_dir%/../web%app.path.thumbnail_images%'
-            
+
 liip_imagine:
     resolvers:
         default:

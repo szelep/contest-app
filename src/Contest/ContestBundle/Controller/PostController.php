@@ -10,10 +10,13 @@ use ContestBundle\Form\PostType;
 use ContestBundle\Form\CommentType;
 use ContestBundle\Form\VoteType;
 use ContestBundle\Entity\Post;
+use ContestBundle\Entity\Comment;
 use ContestBundle\Entity\Vote;
 use ContestBundle\Service\ContestService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class PostController extends Controller
 {
@@ -46,7 +49,7 @@ class PostController extends Controller
 
 
             $fileUpload = $fileService->manageMultipleUpload($media, $post);
-         //   var_dump($fileUpload); die();
+
             if (false === $fileUpload) {
                 $accessService = $this->container->get('access_service');
                 $allowedTypes = implode(',', $accessService->findAllowedFileTypes($post));
@@ -101,39 +104,79 @@ class PostController extends Controller
 
         $commentForm->handleRequest($request);
         if ('POST' === $request->getMethod()) {
-                if ($commentForm->isValid()) {
-                    echo 'VALID';
-                } else {
-                    $validator = $this->get('validator');
-                    $errorsValidator = $validator->validate($commentForm);
-
-                    foreach ($errorsValidator as $error) {
-                        array_push($errors, $error->getMessage());
-                    }
-
-                    return new JsonResponse(array(
-                        'code' => 400,
-                        'status'  => 'error',
-                        'message' => $errors,
-                        ),
-                        400
-                    );
-                }
-
+            if ($commentForm->isValid()) {
                 $entityManager = $this->getDoctrine()->getManager();
 
                 $formData = $commentForm->getData();
-                $formData
+                 $formData
                     ->setAuthor($this->getUser())
                     ->setPost($post)
                     ->setVotes(0);
+
                 $entityManager->persist($formData);
                 $entityManager->flush();
+            } else {
+                $validator = $this->get('validator');
+                $errorsValidator = $validator->validate($commentForm);
+
+                foreach ($errorsValidator as $error) {
+                    array_push($errors, $error->getMessage());
+                }
+
+                return new JsonResponse(array(
+                    'code' => 400,
+                    'status'  => 'error',
+                    'message' => $errors,
+                    ),
+                    400
+                );
+            }
         }
 
         return $this->render('@Contest/Default/postModal.html.twig', array(
             'parameters' => $parameters
         ));
+    }
+
+    /**
+     * @Route("/contest/post/comment/remove/{id}", name="remove_comment")
+     *
+     * @Method("POST")
+     *
+     * @throws AccessDeniedException ikona usunięcia jest wyświetlana tylko przy swoich komentarzach
+     *      jeżeli jakimś cudem ktoś wywoła post z id nieswojego komentarza wypluwa ten wyjątek.
+     */
+    public function removeCommentAction($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $comment = $entityManager
+                ->getRepository(Comment::class)
+                ->findOneById($id);
+
+        if (null === $comment) {
+            throw new NotFoundHttpException('Nie odnaleziono komentarza');
+        }
+
+        $commentOwner = $comment->getAuthor();
+        $currentUser = $this->getUser();
+
+        if ($currentUser === $commentOwner) {
+            $entityManager->remove($comment);
+            $entityManager->flush();
+
+            return new JsonResponse(array(
+                'code' => 200,
+                'status'  => 'success',
+                'message' => array('Usunięto komentarz'),
+                ),
+                200
+            );
+        } else {
+            throw new AccessDeniedException("Ten komentarz nie należy do Ciebie");
+        }
+
+
     }
 
     /**
