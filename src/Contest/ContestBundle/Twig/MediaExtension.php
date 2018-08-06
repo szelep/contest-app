@@ -4,6 +4,7 @@ namespace ContestBundle\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use ContestBundle\Entity\File;
 
 class MediaExtension extends AbstractExtension
 {
@@ -21,11 +22,20 @@ class MediaExtension extends AbstractExtension
 
     public function mediaFilter($media)
     {
-        $fileName = $media->getFile()->getTempName();
-        $extension = $media->getFile()->getExtension();
+        $directory = '';
+        if ($media instanceof File) {
+            $fileName = $media->getTempName();
+            $extension = $media->getExtension();
+            $directory = 'template';
+        } else {
+            $fileName = $media->getFile()->getTempName();
+            $extension = $media->getFile()->getExtension();
+            $directory = 'post';
+        }
+
         $path = array(
             $this->mediaDir,
-            'post',
+            $directory,
             $fileName . '.' . $extension
         );
 

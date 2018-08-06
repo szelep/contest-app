@@ -42,7 +42,7 @@ class FileService
             }
         }
     }
-    public function persistFile(UploadedFile $uploadedFile, $post)
+    public function persistFile(UploadedFile $uploadedFile, $post = null)
     {
         $file = new File();
         $fileName = $this->generateUniquename();

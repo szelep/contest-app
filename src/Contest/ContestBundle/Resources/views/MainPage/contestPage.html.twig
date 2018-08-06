@@ -3,6 +3,7 @@
     {% include('@Contest/Default/modal.html.twig') %}
 {% endblock %}
 {% block body %}
+    <div class="contest-header" style="background: url({{asset(template.headerImage|media )}})"></div>
     <b>{{ contest_title }}</b><br />
     <div class="card-columns">
     {% for post in post_list %}
@@ -23,5 +24,5 @@
     {% endfor %}
     <button type="button" class="btn btn-success" data-contest="{{ path('add_new_post', {'id' : contest_id}) }}" data-toggle="modal" data-target="#myModal">Dodaj</button>
     </div>
-    
+
 {% endblock %}

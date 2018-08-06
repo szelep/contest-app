@@ -54,8 +54,8 @@ class AdminController extends BaseAdminController
         $info = array(
                 'k_width' => (empty($thumbnailWidth)? '200' : $thumbnailWidth),
             );
- 
-        
+
+
         if (null !== $contestTemplate) {
             $contestTemplate
                         ->setThumbnail(null)
@@ -159,7 +159,7 @@ class AdminController extends BaseAdminController
     {
         $entity
             ->setCreatedBy($this->getUser());
-        
+
         parent::persistEntity($entity);
     }
 }

@@ -9,8 +9,8 @@
                         Grafiki szablonu
                     </h3>
                 </div>
-                <div class="box-body"> 
-                {{ form_start(form) }}            
+                <div class="box-body">
+                {{ form_start(form) }}
                     <div class="form-group  field-text">
                         <label class="control-label">Miniatura konkursu</label><br />
                         {{ form_widget(form.thumbnail) }}
@@ -26,7 +26,7 @@
                         {% endif %}
                         </div>
                     </div>
-                    <hr />         
+                    <hr />
                     <div class="form-group  field-text">
                         <label class="control-label">Obraz nagłówka</label><br />
                         {{ form_widget(form.headerImage) }}
@@ -62,10 +62,17 @@
                     <div class="form-group  field-text">
                         <label class="control-label">Obraz stopki</label><br />
                         {{ form_widget(form.footerImage) }}
-                    </div>          
-                </div>              
+                    </div>
+                </div>
             </div>
         </div>
+        <style>
+        {# PRZENIEŚ STYLE TODO #}
+            div.post-list {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+        </style>
         <div class="field-group col-lg-8">
             <div class="box box-default">
             <div class="box-header with-border">
@@ -75,19 +82,28 @@
                     </h3>
                 </div>
                 <div class="box-body">
-                    <div style="border: 1px solid #dedede">
-                        <div style="padding: 10px">
-                            <div id="header-image">
-                            {% if elements.header_image is defined %}
-                                <img src="{{ asset('upload/template/'~elements.header_image) }}"><br />
-                            {% endif %}
+                    <div style="border: 1px solid #dedede; {% if elements.background_image is defined %}background: url({{ asset('upload/template/'~elements.background_image) }}) {% endif %}">
+                        <div style="padding: 10px;">
+                            <div id="header-image" style="{% if elements.header_image is defined %}background: url({{ asset('upload/template/'~elements.header_image) }}); min-height: 100px;"{% endif %}></div>
+                            <div class="post-list">
+                            <div class="card-columns">
+                                <div class="card">
+                                <!--<img class="card-img-top" src=".../100px180/" alt="Card image cap"> -->
+                                    <div class="card-body" data-toggle="modal" data-target="#myModal">
+                                        <h5 class="card-title">Wpis</h5>
+                                        <p class="card-text">
+                                            <br/>
+                                            dsadsa
+                                        </p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <small class="text-muted">Dodano: fds przez: fsd</small>
+                                        <i class="fa fa-heart"></i> 5
+                                    </div>
+                                </div>
                             </div>
-                            <div id="post-list">TUTAJ BĘDZIE PODGLĄD KAFELKÓW WPISÓW KONKURSOWYCH :)</div>
-                            <div id="footer-image">
-                            {% if elements.footer_image is defined %}
-                                <img src="{{ asset('upload/template/'~elements.footer_image) }}"><br />
-                            {% endif %}
                             </div>
+                            <div id="footer-image" style="{% if elements.footer_image is defined %}background: url({{ asset('upload/template/'~elements.footer_image) }}); min-height: 100px"{% endif %}></div>
                         </div>
                     </div>
                 </div>
