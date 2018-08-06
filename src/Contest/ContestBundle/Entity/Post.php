@@ -24,7 +24,7 @@ class Post
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Contest", inversedBy="post")
+     * @ORM\ManyToOne(targetEntity="Contest", inversedBy="posts")
      * @ORM\JoinColumn(name="contest_id", referencedColumnName="id")
      */
     protected $contest;

@@ -96,14 +96,14 @@ class Contest
 
     /**
      * @var ArrayCollection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Post", mappedBy="contest", cascade={"remove"})
      */
     protected $posts;
 
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="description", type="string", length=255)
      */
     protected $description;
@@ -158,7 +158,7 @@ class Contest
 
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(
      *     name="post_limit",
      *     type="integer",
@@ -227,7 +227,7 @@ class Contest
 
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(
      *     name="max_votes_per_user",
      *     type="integer",
@@ -236,10 +236,10 @@ class Contest
      * )
      */
     protected $maxVotesPerUser = 0;
-    
+
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(
      *     name="max_file_size",
      *     type="integer",
@@ -248,7 +248,7 @@ class Contest
      * )
      */
     protected $maxFileSize = 0;
-    
+
    // protected $moderators;
 
     /**
@@ -265,7 +265,7 @@ class Contest
 
     /**
      * @var int
-     * 
+     *
      * @ORM\Column(
      *     name="media_count_limit",
      *     type="integer",
@@ -301,8 +301,8 @@ class Contest
 
     /**
      * @var Template
-     * 
-     * @ORM\OneToOne(targetEntity="Template")
+     *
+     * @ORM\OneToOne(targetEntity="Template", mappedBy="contest")
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
      */
     protected $template;
@@ -317,7 +317,7 @@ class Contest
     {
         return $this->title;
     }
-    
+
     /**
      * Get id
      *
@@ -485,7 +485,7 @@ class Contest
 
         return $this;
     }
-    
+
     public function getDescription()
     {
         return $this->description;
@@ -615,7 +615,7 @@ class Contest
      * Get the value of allowCommentVote
      *
      * @return  bool
-     */ 
+     */
     public function getAllowCommentVote()
     {
         return $this->allowCommentVote;
@@ -627,7 +627,7 @@ class Contest
      * @param  bool  $allowCommentVote
      *
      * @return  self
-     */ 
+     */
     public function setAllowCommentVote(bool $allowCommentVote)
     {
         $this->allowCommentVote = $allowCommentVote;
@@ -639,7 +639,7 @@ class Contest
      * Get the value of sendNotifications
      *
      * @return  bool
-     */ 
+     */
     public function getSendNotifications()
     {
         return $this->sendNotifications;
@@ -651,7 +651,7 @@ class Contest
      * @param  bool  $sendNotifications
      *
      * @return  self
-     */ 
+     */
     public function setSendNotifications(bool $sendNotifications)
     {
         $this->sendNotifications = $sendNotifications;
@@ -684,7 +684,7 @@ class Contest
      * Get the value of allowReport
      *
      * @return  bool
-     */ 
+     */
     public function getAllowReport()
     {
         return $this->allowReport;
@@ -696,7 +696,7 @@ class Contest
      * @param  bool  $allowReport
      *
      * @return  self
-     */ 
+     */
     public function setAllowReport(bool $allowReport)
     {
         $this->allowReport = $allowReport;
@@ -708,7 +708,7 @@ class Contest
      * Get the value of maxVotesPerUser
      *
      * @return  int
-     */ 
+     */
     public function getMaxVotesPerUser()
     {
         return $this->maxVotesPerUser;
@@ -720,7 +720,7 @@ class Contest
      * @param  int  $maxVotesPerUser
      *
      * @return  self
-     */ 
+     */
     public function setMaxVotesPerUser(int $maxVotesPerUser)
     {
         $this->maxVotesPerUser = $maxVotesPerUser;
@@ -732,7 +732,7 @@ class Contest
      * Get the value of allowToReport
      *
      * @return  bool
-     */ 
+     */
     public function getAllowToReport()
     {
         return $this->allowToReport;
@@ -744,7 +744,7 @@ class Contest
      * @param  bool  $allowToReport
      *
      * @return  self
-     */ 
+     */
     public function setAllowToReport(bool $allowToReport)
     {
         $this->allowToReport = $allowToReport;
@@ -756,7 +756,7 @@ class Contest
      * Get the value of mediaCountLimit
      *
      * @return  int
-     */ 
+     */
     public function getMediaCountLimit()
     {
         return $this->mediaCountLimit;
@@ -768,7 +768,7 @@ class Contest
      * @param  int  $mediaCountLimit
      *
      * @return  self
-     */ 
+     */
     public function setMediaCountLimit(int $mediaCountLimit)
     {
         $this->mediaCountLimit = $mediaCountLimit;
@@ -780,7 +780,7 @@ class Contest
      * Get the value of blockRightMouse
      *
      * @return  bool
-     */ 
+     */
     public function getBlockRightMouse()
     {
         return $this->blockRightMouse;
@@ -792,7 +792,7 @@ class Contest
      * @param  bool  $blockRightMouse
      *
      * @return  self
-     */ 
+     */
     public function setBlockRightMouse(bool $blockRightMouse)
     {
         $this->blockRightMouse = $blockRightMouse;
@@ -804,7 +804,7 @@ class Contest
      * Get the value of maxFileSize
      *
      * @return  int
-     */ 
+     */
     public function getMaxFileSize()
     {
         return $this->maxFileSize;
@@ -816,7 +816,7 @@ class Contest
      * @param  int  $maxFileSize
      *
      * @return  self
-     */ 
+     */
     public function setMaxFileSize(int $maxFileSize)
     {
         $this->maxFileSize = $maxFileSize;
@@ -848,7 +848,7 @@ class Contest
      * Get the value of countViews
      *
      * @return  bool
-     */ 
+     */
     public function getCountViews()
     {
         return $this->countViews;
@@ -860,7 +860,7 @@ class Contest
      * @param  bool  $countViews
      *
      * @return  self
-     */ 
+     */
     public function setCountViews(bool $countViews)
     {
         $this->countViews = $countViews;
@@ -872,7 +872,7 @@ class Contest
      * Get the value of moderatedComments
      *
      * @return  bool
-     */ 
+     */
     public function getModeratedComments()
     {
         return $this->moderatedComments;
@@ -884,7 +884,7 @@ class Contest
      * @param  bool  $moderatedComments
      *
      * @return  self
-     */ 
+     */
     public function setModeratedComments(bool $moderatedComments)
     {
         $this->moderatedComments = $moderatedComments;
@@ -896,7 +896,7 @@ class Contest
      * Get the value of template
      *
      * @return  Template
-     */ 
+     */
     public function getTemplate()
     {
         return $this->template;
@@ -908,7 +908,7 @@ class Contest
      * @param  Template  $template
      *
      * @return  self
-     */ 
+     */
     public function setTemplate(Template $template)
     {
         $this->template = $template;
